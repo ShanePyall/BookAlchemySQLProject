@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <Title>Home</Title>
+  </head>
+  <body>
+
+  <form action="/home" method="POST">
+    <button>Search</button>
+    <input type="text" id="Search" name="Search">
+  </form>
+
+  <div>
+    <br>
+    <br>
+  </div>
+
+  <form action="/add_author" method="GET">
+    <button>+ Author</button>
+  </form>
+
+  <form action="/add_book" method="GET">
+    <button>+ Book</button>
+  </form>
+
+  <div>
+    <br>
+  </div>
+
+  <form action="/home" method="POST">
+    <input type="submit" id="Titles A-Z" name="Titles A-Z" value="Titles A-Z">
+    <input type="submit" id="Authors A-Z" name="Authors A-Z" value="Authors A-Z">
+  </form>
+
+    {% for book in books %}
+    <div>
+      <h2>{{ book.title }}
+      <form action="book/{{ book.book_id }}/delete" method="POST">
+        <input type="submit" value="Delete">
+      </form>
+    </h2>
+      <h4>by: {{ book.name }}</h4>
+    </div>
+    {% endfor %}
+
+  </body>
+</html>

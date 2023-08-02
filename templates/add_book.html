@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <Title>Add Book</Title>
+  </head>
+  <body>
+
+  <form action="/home" method="GET">
+        <button>Return Home</button>
+    </form>
+
+  <div>
+    <br>
+    <br>
+  </div>
+
+  <form action="/add_book" method="POST">
+    <label for="name">Author Name:</label>
+    <input type="text" id="name" name="name" required><br><br>
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title" required><br><br>
+
+    <label for="isbn">ISBN number:</label>
+    <input type="number" id="isbn" name="isbn" required><br><br>
+    <label for="publication_year">Publication year:</label>
+    <input type="date" id="publication_year" name="publication_year" required><br><br>
+
+
+    <input type="submit" value="Add Book">
+  </form>
+
+  </body>
+</html>
