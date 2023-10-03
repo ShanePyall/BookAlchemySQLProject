@@ -1,12 +1,10 @@
 from datetime import date
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-import os
 
 # Creates path to sql database that's stored in the server
-file_path = os.path.abspath(os.getcwd()) + "\\library.sqlite"
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + file_path
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///library.sqlite'
 db = SQLAlchemy()
 db.init_app(app)
 
@@ -44,6 +42,10 @@ class Book(db.Model):
     Author: {self.author_id}"""
 
 
+with app.app_context():
+    db.create_all()
+
+
 def html_date_comprehension(data):
     # Translates raw HTML date data, to desired type for storing in our database.
     data_list = data.split('-')
@@ -76,7 +78,7 @@ def add_author():
         # Stores new author in database.
         db.session.add(res)
         db.session.commit()
-        return home()
+        return redirect(url_for('home'))
     # If request is 'GET', render add author template
     return render_template("add_author.html")
 
@@ -108,12 +110,12 @@ def add_book():
 
         # Store new book in database
         db.session.commit()
-        return home()
+        return redirect(url_for('home'))
     # If request is 'GET', render add book template
     return render_template("add_book.html")
 
 
-@app.route("/home", methods=['GET', 'POST'])
+@app.route("/", methods=['GET', 'POST'])
 def home():
     """Displays all books present in database"""
     if request.method == 'POST':
@@ -136,7 +138,7 @@ def home():
         elif authors is not None:
             books_and_authors = Book.query.join(Author, Author.author_id == Book.author_id)\
                 .add_columns(Book.title, Author.name, Book.book_id).order_by(Author.name).all()
-        # Safety net: if a post request was sent but no data was received, send defualt list.
+        # Safety net: if a post request was sent but no data was received, send default list.
         else:
             books_and_authors = Book.query.join(Author, Author.author_id == Book.author_id)\
                 .add_columns(Book.title, Author.name, Book.book_id).all()
@@ -150,7 +152,7 @@ def home():
 @app.route("/book/<int:book_id>/delete", methods=['POST'])
 def delete(book_id):
     """Deletes book obj from database"""
-    # recieves book_id from route, finds and returns list of results in database.
+    # receives book_id from route, finds and returns list of results in database.
     target = Book.query.filter_by(book_id=book_id).all()
     db.session.delete(target[0])
     db.session.commit()
@@ -159,11 +161,11 @@ def delete(book_id):
 
 @app.errorhandler(404)
 def error(e, message=None):
-    """mainly used for errors, can be used for statments and returning to home"""
+    """mainly used for errors, can be used for statements and returning to home"""
     if message is None:
         message = ["Site not found"]
     print(f"Error code: {e}")
-    return render_template("404.html", message=message)
+    return render_template("error.html", message=message)
 
 
 if __name__ == "__main__":
